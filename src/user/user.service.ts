@@ -15,6 +15,8 @@ import { Permission } from './entities/permission.entity';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { LoginUserVo } from './vo/login-user.vo';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import { UpdateUserDto } from './dto/udpate-user.dto';
 
 @Injectable()
 export class UserService {
@@ -161,5 +163,74 @@ export class UserService {
         return arr;
       }, []),
     };
+  }
+
+  async findUserDetailById(userId: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userId,
+      },
+    });
+    return user;
+  }
+
+  async updatePassword(
+    userId: number,
+    updateUserPasswordDto: UpdateUserPasswordDto,
+  ) {
+    const captcha = await this.redisService.get(
+      `update_password_captcha_${updateUserPasswordDto.email}`,
+    );
+    if (!captcha)
+      throw new HttpException(
+        'Verification code has expired',
+        HttpStatus.BAD_REQUEST,
+      );
+    if (updateUserPasswordDto.captcha !== captcha)
+      throw new HttpException(
+        'Verification code is incorrect',
+        HttpStatus.BAD_REQUEST,
+      );
+
+    const foundUser = await this.userRepository.findOneBy({
+      id: userId,
+    });
+    foundUser.password = md5(updateUserPasswordDto.password);
+    try {
+      await this.userRepository.save(foundUser);
+      return 'Password change success';
+    } catch (err) {
+      this.logger.error(err, UserService);
+      return 'Password change fail';
+    }
+  }
+
+  async update(userId: number, updateUserDto: UpdateUserDto) {
+    const captcha = await this.redisService.get(
+      `update_user_captcha_${updateUserDto.email}`,
+    );
+    if (!captcha)
+      throw new HttpException(
+        'Verification code has expired',
+        HttpStatus.BAD_REQUEST,
+      );
+    if (updateUserDto.captcha !== captcha)
+      throw new HttpException(
+        'Verification code is incorrect',
+        HttpStatus.BAD_REQUEST,
+      );
+
+    const foundUser = await this.userRepository.findOneBy({
+      id: userId,
+    });
+    if (updateUserDto.nickName) foundUser.nickName = updateUserDto.nickName;
+    if (updateUserDto.avatar) foundUser.avatar = updateUserDto.avatar;
+    try {
+      await this.userRepository.save(foundUser);
+      return 'UserInfo change success';
+    } catch (err) {
+      this.logger.error(err, UserService);
+      return 'UserInfo change fail';
+    }
   }
 }

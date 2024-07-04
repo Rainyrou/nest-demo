@@ -42,11 +42,11 @@ export class User {
   avatar: string;
 
   @Column({
-    name: 'ipone_number',
+    name: 'iphone_number',
     nullable: true,
     length: 20,
   })
-  iponeNumber: string;
+  iphoneNumber: string;
 
   @Column({
     name: 'is_frozen',

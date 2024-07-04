@@ -6,7 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { RedisService } from 'src/redis/redis.service';
 import { md5 } from 'src/utils';
 import { User } from './entities/user.entity';
@@ -17,6 +17,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { LoginUserVo } from './vo/login-user.vo';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UpdateUserDto } from './dto/udpate-user.dto';
+import { UserListVo } from './vo/user-list.vo';
 
 @Injectable()
 export class UserService {
@@ -40,7 +41,7 @@ export class UserService {
     user1.username = 'Rainyrou';
     user1.password = md5('2333333');
     user1.email = 'Rainyrou@gamil.com';
-    user1.iponeNumber = '13233323333';
+    user1.iphoneNumber = '13233323333';
     user1.isAdmin = true;
 
     const user2 = new User();
@@ -125,7 +126,7 @@ export class UserService {
       username: user.username,
       nickName: user.nickName,
       email: user.email,
-      iponeNumber: user.iponeNumber,
+      iphoneNumber: user.iphoneNumber,
       avatar: user.avatar,
       createTime: user.createTime,
       isFrozen: user.isFrozen,
@@ -232,5 +233,47 @@ export class UserService {
       this.logger.error(err, UserService);
       return 'UserInfo change fail';
     }
+  }
+
+  async freezeUserById(id: number) {
+    const user = await this.userRepository.findOneBy({
+      id,
+    });
+    user.isFrozen = true;
+    await this.userRepository.save(user);
+  }
+
+  async findUserByPage(
+    currentPage: number,
+    pageSize: number,
+    username: string,
+    nickName: string,
+    email: string,
+  ) {
+    const skip = (currentPage - 1) * pageSize;
+    const condition: Record<string, any> = {};
+    if (username) condition.username = Like(`%${username}%`);
+    if (nickName) condition.nickName = Like(`%${nickName}%`);
+    if (email) condition.email = Like(`%${email}%`);
+    const [users, totalCount] = await this.userRepository.findAndCount({
+      select: [
+        'id',
+        'username',
+        'password',
+        'nickName',
+        'avatar',
+        'email',
+        'iphoneNumber',
+        'isFrozen',
+        'createTime',
+      ],
+      skip: skip,
+      take: pageSize,
+      where: condition,
+    });
+    const userListVo = new UserListVo();
+    userListVo.users = users;
+    userListVo.totalCount = totalCount;
+    return userListVo;
   }
 }

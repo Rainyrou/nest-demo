@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "Launch via NPM",
+            "request": "launch",
+            "runtimeArgs": [
+                "run-script",
+                "start:dev"
+            ],
+            "console": "integratedTerminal",
+            "runtimeExecutable": "pnpm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        }
+    ]    
+}

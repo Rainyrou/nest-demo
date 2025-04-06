@@ -75,8 +75,8 @@ export class UserController {
     description: 'Send success',
     type: String,
   })
-  @Get('register-captcha')
-  async captcha(@Query('address') address: string) {
+  @Get('register_captcha')
+  async registerCaptcha(@Query('address') address: string) {
     const code = Math.random().toString().slice(2, 8);
     await this.redisService.set(`captcha_${address}`, code, 5 * 60);
     await this.emailService.sendMail({
@@ -87,7 +87,7 @@ export class UserController {
     return 'Send success';
   }
 
-  @Get('init-data')
+  @Get('init_data')
   async initData() {
     await this.userService.initData();
     return 'Done';
@@ -107,7 +107,7 @@ export class UserController {
   @Post('login')
   async userLogin(@Body() loginUser: LoginUserDto) {
     const vo = await this.userService.login(loginUser, false);
-    vo.accessToken = this.jwtService.sign(
+    vo.access_token = this.jwtService.sign(
       {
         userId: vo.userInfo.id,
         username: vo.userInfo.username,
@@ -119,7 +119,7 @@ export class UserController {
           this.configService.get('jwt_access_token_expires_time') || '30m',
       },
     );
-    vo.refreshToken = this.jwtService.sign(
+    vo.refresh_token = this.jwtService.sign(
       {
         userId: vo.userInfo.id,
       },
@@ -145,7 +145,7 @@ export class UserController {
   @Post('admin/login')
   async adminLogin(@Body() loginUser: LoginUserDto) {
     const vo = await this.userService.login(loginUser, true);
-    vo.accessToken = this.jwtService.sign(
+    vo.access_token = this.jwtService.sign(
       {
         userId: vo.userInfo.id,
         username: vo.userInfo.username,
@@ -157,7 +157,7 @@ export class UserController {
           this.configService.get('jwt_access_token_expires_time') || '30m',
       },
     );
-    vo.refreshToken = this.jwtService.sign(
+    vo.refresh_token = this.jwtService.sign(
       {
         userId: vo.userInfo.id,
       },
@@ -288,12 +288,12 @@ export class UserController {
     const vo = new UserInfoVo();
     vo.id = user.id;
     vo.username = user.username;
-    vo.nickName = user.nickName;
+    vo.nickname = user.nickname;
     vo.email = user.email;
-    vo.iphoneNumber = user.iphoneNumber;
+    vo.iphone_number = user.iphone_number;
     vo.avatar = user.avatar;
-    vo.createTime = user.createTime;
-    vo.isFrozen = user.isFrozen;
+    vo.create_time = user.create_time;
+    vo.is_frozen = user.is_frozen;
     return vo;
   }
 
@@ -425,8 +425,8 @@ export class UserController {
     required: false,
   })
   @ApiQuery({
-    name: 'nickName',
-    description: 'nickName',
+    name: 'nickname',
+    description: 'nickname',
     type: String,
     required: false,
   })
@@ -457,8 +457,8 @@ export class UserController {
     pageSize: number,
     @Query('username')
     username: string,
-    @Query('nickName')
-    nickName: string,
+    @Query('nickname')
+    nickname: string,
     @Query('email')
     email: string,
   ) {
@@ -466,7 +466,7 @@ export class UserController {
       currentPage,
       pageSize,
       username,
-      nickName,
+      nickname,
       email,
     );
   }

@@ -18,8 +18,8 @@ async function bootstrap() {
   app.enableCors();
 
   const config = new DocumentBuilder()
-    .setTitle('clown-nest')
-    .setDescription('api interface document')
+    .setTitle('nest-demo')
+    .setDescription('API Interface Document')
     .setVersion('1.0')
     .addBearerAuth({
       type: 'http',

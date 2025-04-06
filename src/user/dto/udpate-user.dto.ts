@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {
   @ApiProperty()
-  nickName: string;
+  nickname: string;
 
   @ApiProperty()
   avatar: string;

@@ -8,20 +8,20 @@ export class UserInfoVo {
   username: string;
 
   @ApiProperty()
-  nickName: string;
+  nickname: string;
 
   @ApiProperty()
   email: string;
 
   @ApiProperty()
-  iphoneNumber: string;
+  iphone_number: string;
 
   @ApiProperty()
   avatar: string;
 
   @ApiProperty()
-  createTime: Date;
+  create_time: Date;
 
   @ApiProperty()
-  isFrozen: boolean;
+  is_frozen: boolean;
 }

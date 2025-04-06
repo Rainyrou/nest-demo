@@ -5,7 +5,7 @@ class User {
   id: number;
 
   @ApiProperty()
-  nickName: string;
+  nickname: string;
 
   @ApiProperty()
   username: string;
@@ -14,16 +14,16 @@ class User {
   email: string;
 
   @ApiProperty()
-  iphoneNumber: string;
+  iphone_number: string;
 
   @ApiProperty()
   avatar: string;
 
   @ApiProperty()
-  isFrozen: boolean;
+  is_frozen: boolean;
 
   @ApiProperty()
-  createTime: Date;
+  create_time: Date;
 }
 
 export class UserListVo {
@@ -31,5 +31,5 @@ export class UserListVo {
   users: User[];
 
   @ApiProperty()
-  totalCount: number;
+  total_count: number;
 }

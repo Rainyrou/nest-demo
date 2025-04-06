@@ -37,16 +37,16 @@ export class UserService {
 
   async initData() {
     const user1 = new User();
-    user1.nickName = 'Rainyrou';
+    user1.nickname = 'Rainyrou';
     user1.username = 'Rainyrou';
     user1.password = md5('2333333');
     user1.email = 'Rainyrou@gamil.com';
-    user1.iphoneNumber = '13233323333';
-    user1.isAdmin = true;
+    user1.iphone_number = '13233323333';
+    user1.is_admin = true;
 
     const user2 = new User();
     user2.username = 'Clown';
-    user2.nickName = 'Clown';
+    user2.nickname = 'Clown';
     user2.password = md5('6666666');
     user2.email = 'Clown@qq.com';
 
@@ -93,7 +93,7 @@ export class UserService {
       throw new HttpException('User has existed', HttpStatus.BAD_REQUEST);
 
     const newUser = new User();
-    newUser.nickName = user.nickName;
+    newUser.nickname = user.nickname;
     newUser.username = user.username;
     newUser.password = md5(user.password);
     newUser.email = user.email;
@@ -107,11 +107,11 @@ export class UserService {
     }
   }
 
-  async login(loginUserDto: LoginUserDto, isAdmin: boolean) {
+  async login(loginUserDto: LoginUserDto, is_admin: boolean) {
     const user = await this.userRepository.findOne({
       where: {
         username: loginUserDto.username,
-        isAdmin,
+        is_admin,
       },
       relations: ['roles', 'roles.permissions'],
     });
@@ -124,13 +124,13 @@ export class UserService {
     vo.userInfo = {
       id: user.id,
       username: user.username,
-      nickName: user.nickName,
+      nickname: user.nickname,
       email: user.email,
-      iphoneNumber: user.iphoneNumber,
+      iphone_number: user.iphone_number,
       avatar: user.avatar,
-      createTime: user.createTime,
-      isFrozen: user.isFrozen,
-      isAdmin: user.isAdmin,
+      create_time: user.create_time,
+      is_frozen: user.is_frozen,
+      is_admin: user.is_admin,
       roles: user.roles.map((item) => item.name),
       permissions: user.roles.reduce((arr, item) => {
         item.permissions.forEach((permission) => {
@@ -143,18 +143,18 @@ export class UserService {
     return vo;
   }
 
-  async findUserById(userId: number, isAdmin: boolean) {
+  async findUserById(userId: number, is_admin: boolean) {
     const user = await this.userRepository.findOne({
       where: {
         id: userId,
-        isAdmin,
+        is_admin,
       },
       relations: ['roles', 'roles.permissions'],
     });
     return {
       id: user.id,
       username: user.username,
-      isAdmin: user.isAdmin,
+      is_admin: user.is_admin,
       roles: user.roles.map((item) => item.name),
       permissions: user.roles.reduce((arr, item) => {
         item.permissions.forEach((permission) => {
@@ -224,7 +224,7 @@ export class UserService {
     const foundUser = await this.userRepository.findOneBy({
       id: userId,
     });
-    if (updateUserDto.nickName) foundUser.nickName = updateUserDto.nickName;
+    if (updateUserDto.nickname) foundUser.nickname = updateUserDto.nickname;
     if (updateUserDto.avatar) foundUser.avatar = updateUserDto.avatar;
     try {
       await this.userRepository.save(foundUser);
@@ -239,7 +239,7 @@ export class UserService {
     const user = await this.userRepository.findOneBy({
       id,
     });
-    user.isFrozen = true;
+    user.is_frozen = true;
     await this.userRepository.save(user);
   }
 
@@ -247,25 +247,25 @@ export class UserService {
     currentPage: number,
     pageSize: number,
     username: string,
-    nickName: string,
+    nickname: string,
     email: string,
   ) {
     const skip = (currentPage - 1) * pageSize;
     const condition: Record<string, any> = {};
     if (username) condition.username = Like(`%${username}%`);
-    if (nickName) condition.nickName = Like(`%${nickName}%`);
+    if (nickname) condition.nickname = Like(`%${nickname}%`);
     if (email) condition.email = Like(`%${email}%`);
     const [users, totalCount] = await this.userRepository.findAndCount({
       select: [
         'id',
         'username',
         'password',
-        'nickName',
+        'nickname',
         'avatar',
         'email',
-        'iphoneNumber',
-        'isFrozen',
-        'createTime',
+        'iphone_number',
+        'is_frozen',
+        'create_time',
       ],
       skip: skip,
       take: pageSize,
@@ -273,7 +273,7 @@ export class UserService {
     });
     const userListVo = new UserListVo();
     userListVo.users = users;
-    userListVo.totalCount = totalCount;
+    userListVo.total_count = totalCount;
     return userListVo;
   }
 }

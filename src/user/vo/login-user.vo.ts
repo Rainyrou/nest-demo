@@ -8,7 +8,7 @@ class UserInfo {
   username: string;
 
   @ApiProperty()
-  nickName: string;
+  nickname: string;
 
   @ApiProperty()
   email: string;
@@ -17,16 +17,16 @@ class UserInfo {
   avatar: string;
 
   @ApiProperty()
-  iphoneNumber: string;
+  iphone_number: string;
 
   @ApiProperty()
-  isFrozen: boolean;
+  is_frozen: boolean;
 
   @ApiProperty()
-  isAdmin: boolean;
+  is_admin: boolean;
 
   @ApiProperty()
-  createTime: Date;
+  create_time: Date;
 
   @ApiProperty()
   roles: string[];
@@ -40,8 +40,8 @@ export class LoginUserVo {
   userInfo: UserInfo;
 
   @ApiProperty()
-  accessToken: string;
+  access_token: string;
 
   @ApiProperty()
-  refreshToken: string;
+  refresh_token: string;
 }

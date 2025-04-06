@@ -25,10 +25,10 @@ export class User {
   password: string;
 
   @Column({
-    name: 'nick_name',
+    name: 'nickname',
     length: 50,
   })
-  nickName: string;
+  nickname: string;
 
   @Column({
     length: 50,
@@ -46,25 +46,25 @@ export class User {
     nullable: true,
     length: 20,
   })
-  iphoneNumber: string;
+  iphone_number: string;
 
   @Column({
     name: 'is_frozen',
     default: false,
   })
-  isFrozen: boolean;
+  is_frozen: boolean;
 
   @Column({
     name: 'is_admin',
     default: false,
   })
-  isAdmin: boolean;
+  is_admin: boolean;
 
   @CreateDateColumn()
-  createTime: Date;
+  create_time: Date;
 
   @UpdateDateColumn()
-  updateTime: Date;
+  update_time: Date;
 
   @ManyToMany(() => Role)
   @JoinTable({ name: 'user_roles' })
